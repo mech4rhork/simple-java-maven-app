@@ -7,6 +7,23 @@
   <version>1.0-SNAPSHOT</version>
   <name>my-app</name>
   <url>http://maven.apache.org</url>
+  <properties>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <encoding>UTF-8</encoding>
+    <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
+    <project.resources.sourceEncoding>${encoding}</project.resources.sourceEncoding>
+    <archetype.encoding>${encoding}</archetype.encoding>
+    <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
+  </properties>
+  <distributionManagement>
+    <repository>
+      <id>dummy-snapshots</id>
+      <name>Nexus Snapshots</name>
+      <url>http://localhost:8081/nexus/content/repositories/dummy-snapshots</url>
+    </repository>
+  </distributionManagement>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -28,10 +45,51 @@
               <addClasspath>true</addClasspath>
               <classpathPrefix>lib/</classpathPrefix>
               <mainClass>com.mycompany.app.App</mainClass>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
             </manifest>
           </archive>
         </configuration>
       </plugin>
+      <plugin>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>${maven-deploy-plugin.version}</version>
+        <executions>
+           <execution>
+              <id>default-deploy</id>
+              <phase>deploy</phase>
+              <goals>
+                 <goal>deploy</goal>
+              </goals>
+           </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>${maven-deploy-plugin.version}</version>
+        <configuration>
+           <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <version>1.6.8</version>
+        <executions>
+           <execution>
+              <id>default-deploy</id>
+              <phase>deploy</phase>
+              <goals>
+                 <goal>deploy</goal>
+              </goals>
+           </execution>
+        </executions>
+        <configuration>
+           <serverId>nexus</serverId>
+           <nexusUrl>http://localhost:8081/nexus/</nexusUrl>
+           <skipStaging>true</skipStaging>
+        </configuration>
+     </plugin>
     </plugins>
   </build>
 </project>
