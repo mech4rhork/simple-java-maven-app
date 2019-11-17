@@ -21,7 +21,7 @@
     <repository>
       <id>dummy-snapshots</id>
       <name>Nexus Snapshots</name>
-      <url>http://localhost:8081/nexus/content/repositories/dummy-snapshots</url>
+      <url>http://nexus-dev:8081/nexus/content/repositories/dummy-snapshots</url>
     </repository>
   </distributionManagement>
   <dependencies>
@@ -86,7 +86,7 @@
         </executions>
         <configuration>
            <serverId>nexus</serverId>
-           <nexusUrl>http://localhost:8081/nexus/</nexusUrl>
+           <nexusUrl>http://nexus-dev:8081/nexus/</nexusUrl>
            <skipStaging>true</skipStaging>
         </configuration>
      </plugin>
