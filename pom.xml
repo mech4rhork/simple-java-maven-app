@@ -31,10 +31,16 @@
     <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
     <project.resources.sourceEncoding>${encoding}</project.resources.sourceEncoding>
     <archetype.encoding>${encoding}</archetype.encoding>
-    <nexus.base.url>http://nexus-dev:8081/nexus</nexus.base.url>
+    <!--<nexus.base.url>http://localhost:8081/nexus</nexus.base.url>-->
     <nexus.repoSnapshots.url>${nexus.base.url}/content/repositories/dummy-snapshots</nexus.repoSnapshots.url>
     <nexus.repoReleases.url>${nexus.base.url}/content/repositories/dummy-releases</nexus.repoReleases.url>
   </properties>
+
+  <scm>
+    <connection>scm:git:git@github.com:mech4rhork/simple-java-maven-app.git</connection>
+    <url>scm:git:git@github.com:mech4rhork/simple-java-maven-app.git</url>
+    <developerConnection>scm:git:git@github.com:mech4rhork/simple-java-maven-app.git</developerConnection>
+  </scm>
 
   <dependencies>
     <dependency>
@@ -62,6 +68,11 @@
           <groupId>org.sonatype.plugins</groupId>
           <artifactId>nexus-staging-maven-plugin</artifactId>
           <version>1.6.8</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.5.3</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -92,31 +103,15 @@
            </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <configuration>
-           <skip>true</skip>
+     <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+       <artifactId>maven-release-plugin</artifactId>
+       <configuration>
+         <tagNameFormat>v@{project.version}</tagNameFormat>
+         <autoVersionSubmodules>true</autoVersionSubmodules>
+         <useReleaseProfile>false</useReleaseProfile>
         </configuration>
-     </plugin>
-      <plugin>
-        <groupId>org.sonatype.plugins</groupId>
-        <artifactId>nexus-staging-maven-plugin</artifactId>
-        <executions>
-           <execution>
-              <id>default-deploy</id>
-              <phase>deploy</phase>
-              <goals>
-                 <goal>deploy</goal>
-              </goals>
-           </execution>
-        </executions>
-        <configuration>
-           <serverId>nexus</serverId>
-           <nexusUrl>${nexus.base.url}</nexusUrl>
-           <skipStaging>true</skipStaging>
-        </configuration>
-     </plugin>
+      </plugin>
     </plugins>
   </build>
 </project>
