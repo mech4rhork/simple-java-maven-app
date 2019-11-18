@@ -1,12 +1,28 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <groupId>com.mycompany.app</groupId>
   <artifactId>my-app</artifactId>
-  <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
   <name>my-app</name>
   <url>http://maven.apache.org</url>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>nexus</id>
+      <name>Nexus Snapshots</name>
+      <url>${nexus.repoSnapshots.url}</url>
+    </snapshotRepository>
+    <repository>
+      <id>nexus</id>
+      <name>Nexus Releases</name>
+      <url>${nexus.repoReleases.url}</url>
+    </repository>
+  </distributionManagement>
+
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -15,15 +31,11 @@
     <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
     <project.resources.sourceEncoding>${encoding}</project.resources.sourceEncoding>
     <archetype.encoding>${encoding}</archetype.encoding>
-    <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
+    <nexus.base.url>http://nexus-dev:8081/nexus</nexus.base.url>
+    <nexus.repoSnapshots.url>${nexus.base.url}/content/repositories/dummy-snapshots</nexus.repoSnapshots.url>
+    <nexus.repoReleases.url>${nexus.base.url}/content/repositories/dummy-releases</nexus.repoReleases.url>
   </properties>
-  <distributionManagement>
-    <repository>
-      <id>dummy-snapshots</id>
-      <name>Nexus Snapshots</name>
-      <url>http://nexus-dev:8081/nexus/content/repositories/dummy-snapshots</url>
-    </repository>
-  </distributionManagement>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -32,13 +44,31 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
   <build>
-    <plugins>
-      <plugin>
-        <!-- Build an executable JAR -->
+   <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>2.8.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.0.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.sonatype.plugins</groupId>
+          <artifactId>nexus-staging-maven-plugin</artifactId>
+          <version>1.6.8</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+   <plugins>
+      <plugin><!-- Build an executable JAR -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>3.0.2</version>
         <configuration>
           <archive>
             <manifest>
@@ -52,7 +82,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-deploy-plugin</artifactId>
-        <version>${maven-deploy-plugin.version}</version>
         <executions>
            <execution>
               <id>default-deploy</id>
@@ -66,15 +95,13 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
-        <version>${maven-deploy-plugin.version}</version>
         <configuration>
            <skip>true</skip>
         </configuration>
-      </plugin>
+     </plugin>
       <plugin>
         <groupId>org.sonatype.plugins</groupId>
         <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>1.6.8</version>
         <executions>
            <execution>
               <id>default-deploy</id>
@@ -86,7 +113,7 @@
         </executions>
         <configuration>
            <serverId>nexus</serverId>
-           <nexusUrl>http://nexus-dev:8081/nexus/</nexusUrl>
+           <nexusUrl>${nexus.base.url}</nexusUrl>
            <skipStaging>true</skipStaging>
         </configuration>
      </plugin>
